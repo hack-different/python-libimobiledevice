@@ -3,10 +3,15 @@ from enum import Enum
 from libimobiledevice import BaseError, BaseService
 from libimobiledevice.service import PropertyListService, LockdownServiceDescriptor
 from libimobiledevice.device import Device
+from sys import platform as _platform
 
 
 def initialize_bindings():
-    module = cdll.LoadLibrary('libimobiledevice-1.0.dylib')
+    if _platform == "linux" or _platform == "linux2":
+        module = cdll.LoadLibrary('libimobiledevice-1.0.so')
+    elif _platform == "darwin":
+        module = cdll.LoadLibrary('libimobiledevice-1.0.dylib')
+
     module.afc_client_new.argtypes = [c_void_p, c_void_p, POINTER(c_void_p)]
     module.afc_client_start_service.argtypes = [c_void_p, POINTER(c_void_p), c_char_p]
     module.afc_client_free.argtypes = [c_void_p]

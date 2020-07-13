@@ -1,10 +1,15 @@
 from ctypes import *
 from enum import Enum
 from libimobiledevice import BaseError
+from sys import platform as _platform
 
 
 def _initialize_bindings():
-    module = cdll.LoadLibrary('libimobiledevice-1.0.dylib')
+    if _platform == "linux" or _platform == "linux2":
+        module = cdll.LoadLibrary('libimobiledevice-1.0.so')
+    elif _platform == "darwin":
+        module = cdll.LoadLibrary('libimobiledevice-1.0.dylib')
+
     module.idevice_new.argtypes = [POINTER(c_void_p), c_char_p]
     module.idevice_free.argtypes = [c_void_p]
     module.idevice_get_udid.argtypes = [c_void_p, POINTER(c_char_p)]
