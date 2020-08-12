@@ -2,12 +2,13 @@ from ctypes import *
 from ctypes.util import find_library
 from enum import Enum
 from libimobiledevice import BaseError
+from libimobiledevice.util import parse_c_string_list
 from sys import platform as _platform
 from typing import *
 
 
 def _initialize_bindings():
-    module = find_library('imobiledevice')
+    module = cdll.LoadLibrary(find_library('imobiledevice-1.0'))
 
     module.idevice_new.argtypes = [POINTER(c_void_p), c_char_p]
     module.idevice_free.argtypes = [c_void_p]
@@ -67,7 +68,7 @@ class Device(object):
     def udid(self) -> bytes:
         result = c_char_p()
         self._handle_error(LIBIMOBILEDEVICE.idevice_get_udid(self._c_handle, pointer(result)))
-        return result.value
+        return result.value.decode('utf-8')
 
     @property
     def handle(self):
@@ -78,14 +79,11 @@ class Device(object):
         list = pointer(c_char_p())
         count = c_int(0)
 
-        result = LIBIMOBILEDEVICE.idevice_get_device_list(byref(list), byref(count))
+        result = DeviceErrorCode(LIBIMOBILEDEVICE.idevice_get_device_list(byref(list), byref(count)))
         if result != DeviceErrorCode.IDEVICE_E_SUCCESS:
             raise DeviceError(result)
 
-        devices = []
-        while list:
-            devices.append(list.content.decode('utf-8'))
-            list
+        devices = parse_c_string_list(list)
 
         free_result = LIBIMOBILEDEVICE.idevice_device_list_free(list)
 

@@ -1,11 +1,20 @@
+#!/usr/bin/env python
+
+from pytest import fixture
+from pytest_describe import behaves_like
 from libimobiledevice.device import Device
 
 
 def describe_devices():
+    def it_should_list_devices():
+        devices = Device.devices()
+
     def it_should_open_a_device():
-        device = Device('3ac82354b0a59ba46a03e8ae4937617063e26647')
+        devices = Device.devices()
+        device = Device(devices[0])
 
     def it_should_get_device_info():
-        device = Device('3ac82354b0a59ba46a03e8ae4937617063e26647')
+        devices = Device.devices()
+        device = Device(devices[0])
 
-        assert(device.udid == b'3ac82354b0a59ba46a03e8ae4937617063e26647')
+        assert(device.udid == devices[0])

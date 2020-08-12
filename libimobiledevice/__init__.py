@@ -15,6 +15,10 @@ class BaseError(Exception):
         if self._lookup_table is None:
             self._lookup_table = {}
 
+    def __repr__(self):
+        class_name = type(self)
+        return f"{class_name}: {self._lookup_table[self._c_errcode]}"
+
 
 class BaseService(object):
     __service_name__: Optional[str] = None

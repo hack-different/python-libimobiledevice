@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+from pytest import fixture
+from pytest_describe import behaves_like
 from libimobiledevice.afc import AfcClient
 from libimobiledevice.device import Device
 
