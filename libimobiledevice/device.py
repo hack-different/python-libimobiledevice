@@ -1,18 +1,20 @@
 from ctypes import *
+from ctypes.util import find_library
 from enum import Enum
 from libimobiledevice import BaseError
 from sys import platform as _platform
+from typing import *
 
 
 def _initialize_bindings():
-    if _platform == "linux" or _platform == "linux2":
-        module = cdll.LoadLibrary('libimobiledevice-1.0.so')
-    elif _platform == "darwin":
-        module = cdll.LoadLibrary('libimobiledevice-1.0.dylib')
+    module = find_library('imobiledevice')
 
     module.idevice_new.argtypes = [POINTER(c_void_p), c_char_p]
     module.idevice_free.argtypes = [c_void_p]
     module.idevice_get_udid.argtypes = [c_void_p, POINTER(c_char_p)]
+    module.idevice_get_device_list.argtypes = [POINTER(POINTER(c_char_p)), POINTER(c_int)]
+    module.idevice_device_list_free.argtypes = [POINTER(c_char_p)]
+
     return module
 
 
@@ -70,3 +72,21 @@ class Device(object):
     @property
     def handle(self):
         return self._c_handle
+
+    @staticmethod
+    def devices() -> List[str]:
+        list = pointer(c_char_p())
+        count = c_int(0)
+
+        result = LIBIMOBILEDEVICE.idevice_get_device_list(byref(list), byref(count))
+        if result != DeviceErrorCode.IDEVICE_E_SUCCESS:
+            raise DeviceError(result)
+
+        devices = []
+        while list:
+            devices.append(list.content.decode('utf-8'))
+            list
+
+        free_result = LIBIMOBILEDEVICE.idevice_device_list_free(list)
+
+        return devices
