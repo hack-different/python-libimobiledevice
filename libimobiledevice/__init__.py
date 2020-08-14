@@ -1,6 +1,6 @@
 """Python bindings for libimobiledevice"""
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 from ctypes import c_int16
 from typing import Optional
