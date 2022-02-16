@@ -3,7 +3,7 @@ from ctypes import *
 
 
 def describe_plist_dict():
-    LIBPLIST = cdll.LoadLibrary('libplist-2.0.dylib')
+    LIBPLIST = cdll.LoadLibrary('plist-2.0.dylib')
 
     def it_should_build_a_dict():
         LIBPLIST.plist_new_dict.restype = c_void_p

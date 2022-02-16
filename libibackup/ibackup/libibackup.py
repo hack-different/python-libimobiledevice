@@ -5,9 +5,9 @@ from enum import *
 from libimobiledevice.util import parse_c_string_list
 
 if "Darwin" in system():
-    LIBIBACKUP = cdll.LoadLibrary('libibackup-1.0.dylib')
+    LIBIBACKUP = cdll.LoadLibrary('ibackup-1.0.dylib')
 elif "Linux" in system():
-    LIBIBACKUP = cdll.LoadLibrary('libibackup-1.0.so')
+    LIBIBACKUP = cdll.LoadLibrary('ibackup-1.0.so')
 
 
 class BackupItemType(Enum):

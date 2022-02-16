@@ -4,7 +4,7 @@ from datetime import datetime
 from time import gmtime
 
 
-LIBPLIST = cdll.LoadLibrary('libplist-2.0.dylib')
+LIBPLIST = cdll.LoadLibrary('plist-2.0.dylib')
 
 
 FMT_XML = 1
